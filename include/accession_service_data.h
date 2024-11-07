@@ -41,10 +41,10 @@
  *
  * @extends ServiceData
  */
-typedef struct /*ACCESSION_SERVICE_LOCAL*/ AccessionsServiceData
+typedef struct /*ACCESSION_SERVICE_LOCAL*/ AccessionServiceData
 {
 	/** The base ServiceData. */
-	ServiceData gtsd_base_data;
+	ServiceData asd_base_data;
 
 
 	/**
@@ -52,7 +52,7 @@ typedef struct /*ACCESSION_SERVICE_LOCAL*/ AccessionsServiceData
 	 *
 	 * The MongoTool to connect to the database where our data is stored.
 	 */
-	MongoTool *gtsd_mongo_p;
+	MongoTool *asd_mongo_p;
 
 
 	/**
@@ -60,7 +60,7 @@ typedef struct /*ACCESSION_SERVICE_LOCAL*/ AccessionsServiceData
 	 *
 	 * The name of the database to use.
 	 */
-	const char *gtsd_database_s;
+	const char *asd_database_s;
 
 
 	/**
@@ -68,10 +68,10 @@ typedef struct /*ACCESSION_SERVICE_LOCAL*/ AccessionsServiceData
 	 *
 	 * The collection name to use.
 	 */
-	const char *gtsd_collection_s;
+	const char *asd_collection_s;
 
 
-} AccessionsServiceData;
+} AccessionServiceData;
 
 
 
@@ -96,13 +96,13 @@ extern "C"
 {
 #endif
 
-ACCESSION_SERVICE_LOCAL AccessionsServiceData *AllocateAccessionsServiceData (void);
+ACCESSION_SERVICE_LOCAL AccessionServiceData *AllocateAccessionServiceData (void);
 
 
-ACCESSION_SERVICE_LOCAL void FreeAccessionsServiceData (AccessionsServiceData *data_p);
+ACCESSION_SERVICE_LOCAL void FreeAccessionServiceData (AccessionServiceData *data_p);
 
 
-ACCESSION_SERVICE_LOCAL bool ConfigureAccessionsService (AccessionsServiceData *data_p, GrassrootsServer *grassroots_p);
+ACCESSION_SERVICE_LOCAL bool ConfigureAccessionService (AccessionServiceData *data_p, GrassrootsServer *grassroots_p);
 
 #ifdef __cplusplus
 }

@@ -21,7 +21,7 @@
  */
 
 #include "search_service.h"
-#include "gene_trees_service.h"
+#include "accession_service.h"
 
 
 #include "audit.h"
@@ -42,29 +42,29 @@ static NamedParameterType S_CLUSTER_ID = { "GT Cluster", PT_UNSIGNED_INT };
 static NamedParameterType S_GENERATE_INDEXES = { "GT Generate Indexes", PT_BOOLEAN };
 
 
-static const char *GetGeneTreesSearchServiceName (const Service *service_p);
+static const char *GetAccessionSearchServiceName (const Service *service_p);
 
-static const char *GetGeneTreesSearchServiceDescription (const Service *service_p);
+static const char *GetAccessionSearchServiceDescription (const Service *service_p);
 
-static const char *GetGeneTreesSearchServiceAlias (const Service *service_p);
+static const char *GetAccessionSearchServiceAlias (const Service *service_p);
 
-static const char *GetGeneTreesSearchServiceInformationUri (const Service *service_p);
+static const char *GetAccessionSearchServiceInformationUri (const Service *service_p);
 
-static ParameterSet *GetGeneTreesSearchServiceParameters (Service *service_p, DataResource *resource_p, User *user_p);
+static ParameterSet *GetAccessionSearchServiceParameters (Service *service_p, DataResource *resource_p, User *user_p);
 
-static bool GetGeneTreesSearchServiceParameterTypesForNamedParameters (const Service *service_p, const char *param_name_s, ParameterType *pt_p);
+static bool GetAccessionSearchServiceParameterTypesForNamedParameters (const Service *service_p, const char *param_name_s, ParameterType *pt_p);
 
-static void ReleaseGeneTreesSearchServiceParameters (Service *service_p, ParameterSet *params_p);
+static void ReleaseAccessionSearchServiceParameters (Service *service_p, ParameterSet *params_p);
 
-static ServiceJobSet *RunGeneTreesSearchService (Service *service_p, ParameterSet *param_set_p, User *user_p, ProvidersStateTable *providers_p);
+static ServiceJobSet *RunAccessionSearchService (Service *service_p, ParameterSet *param_set_p, User *user_p, ProvidersStateTable *providers_p);
 
-static ParameterSet *IsResourceForGeneTreesSearchService (Service *service_p, DataResource *resource_p, Handler *handler_p);
+static ParameterSet *IsResourceForAccessionSearchService (Service *service_p, DataResource *resource_p, Handler *handler_p);
 
-static bool CloseGeneTreesSearchService (Service *service_p);
+static bool CloseAccessionSearchService (Service *service_p);
 
-static ServiceMetadata *GetGeneTreesSearchServiceMetadata (Service *service_p);
+static ServiceMetadata *GetAccessionSearchServiceMetadata (Service *service_p);
 
-static void DoSearch (ServiceJob *job_p, const char * const gene_s, const uint32 * const cluster_p, GeneTreesServiceData *data_p);
+static void DoSearch (ServiceJob *job_p, const char * const gene_s, const uint32 * const cluster_p, AccessionServiceData *data_p);
 
 
 /*
@@ -72,36 +72,36 @@ static void DoSearch (ServiceJob *job_p, const char * const gene_s, const uint32
  */
 
 
-Service *GetGeneTreesSearchService (GrassrootsServer *grassroots_p)
+Service *GetAccessionSearchService (GrassrootsServer *grassroots_p)
 {
 	Service *service_p = (Service *) AllocMemory (sizeof (Service));
 
 	if (service_p)
 		{
-			GeneTreesServiceData *data_p = AllocateGeneTreesServiceData ();
+			AccessionServiceData *data_p = AllocateAccessionServiceData ();
 
 			if (data_p)
 				{
 					if (InitialiseService (service_p,
-																 GetGeneTreesSearchServiceName,
-																 GetGeneTreesSearchServiceDescription,
-																 GetGeneTreesSearchServiceAlias,
-																 GetGeneTreesSearchServiceInformationUri,
-																 RunGeneTreesSearchService,
-																 IsResourceForGeneTreesSearchService,
-																 GetGeneTreesSearchServiceParameters,
-																 GetGeneTreesSearchServiceParameterTypesForNamedParameters,
-																 ReleaseGeneTreesSearchServiceParameters,
-																 CloseGeneTreesSearchService,
+																 GetAccessionSearchServiceName,
+																 GetAccessionSearchServiceDescription,
+																 GetAccessionSearchServiceAlias,
+																 GetAccessionSearchServiceInformationUri,
+																 RunAccessionSearchService,
+																 IsResourceForAccessionSearchService,
+																 GetAccessionSearchServiceParameters,
+																 GetAccessionSearchServiceParameterTypesForNamedParameters,
+																 ReleaseAccessionSearchServiceParameters,
+																 CloseAccessionSearchService,
 																 NULL,
 																 false,
 																 SY_SYNCHRONOUS,
 																 (ServiceData *) data_p,
-																 GetGeneTreesSearchServiceMetadata,
+																 GetAccessionSearchServiceMetadata,
 																 NULL,
 																 grassroots_p))
 						{
-							if (ConfigureGeneTreesService (data_p, grassroots_p))
+							if (ConfigureAccessionService (data_p, grassroots_p))
 								{
 									return service_p;
 								}
@@ -109,7 +109,7 @@ Service *GetGeneTreesSearchService (GrassrootsServer *grassroots_p)
 						}		/* if (InitialiseService (.... */
 					else
 						{
-							FreeGeneTreesServiceData (data_p);
+							FreeAccessionServiceData (data_p);
 						}
 				}
 
@@ -125,32 +125,32 @@ Service *GetGeneTreesSearchService (GrassrootsServer *grassroots_p)
 
 
 
-static const char *GetGeneTreesSearchServiceName (const Service * UNUSED_PARAM (service_p))
+static const char *GetAccessionSearchServiceName (const Service * UNUSED_PARAM (service_p))
 {
-	return "GeneTrees search service";
+	return "Accession search service";
 }
 
 
-static const char *GetGeneTreesSearchServiceDescription (const Service * UNUSED_PARAM (service_p))
+static const char *GetAccessionSearchServiceDescription (const Service * UNUSED_PARAM (service_p))
 {
 	return "A service to get the parental data for given markers and populations";
 }
 
 
-static const char *GetGeneTreesSearchServiceAlias (const Service * UNUSED_PARAM (service_p))
+static const char *GetAccessionSearchServiceAlias (const Service * UNUSED_PARAM (service_p))
 {
-	return GT_GROUP_ALIAS_PREFIX_S SERVICE_GROUP_ALIAS_SEPARATOR "search";
+	return ACCESSION_GROUP_ALIAS_PREFIX_S SERVICE_GROUP_ALIAS_SEPARATOR "search";
 }
 
-static const char *GetGeneTreesSearchServiceInformationUri (const Service * UNUSED_PARAM (service_p))
+static const char *GetAccessionSearchServiceInformationUri (const Service * UNUSED_PARAM (service_p))
 {
 	return NULL;
 }
 
 
-static ParameterSet *GetGeneTreesSearchServiceParameters (Service *service_p, DataResource * UNUSED_PARAM (resource_p), User * UNUSED_PARAM (user_p))
+static ParameterSet *GetAccessionSearchServiceParameters (Service *service_p, DataResource * UNUSED_PARAM (resource_p), User * UNUSED_PARAM (user_p))
 {
-	ParameterSet *param_set_p = AllocateParameterSet ("GeneTrees search service parameters", "The parameters used for the GeneTrees search service");
+	ParameterSet *param_set_p = AllocateParameterSet ("Accession search service parameters", "The parameters used for the Accession search service");
 
 	if (param_set_p)
 		{
@@ -185,14 +185,14 @@ static ParameterSet *GetGeneTreesSearchServiceParameters (Service *service_p, Da
 		}
 	else
 		{
-			PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to allocate %s ParameterSet", GetGeneTreesSearchServiceName (service_p));
+			PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to allocate %s ParameterSet", GetAccessionSearchServiceName (service_p));
 		}
 
 	return NULL;
 }
 
 
-static bool GetGeneTreesSearchServiceParameterTypesForNamedParameters (const Service *service_p, const char *param_name_s, ParameterType *pt_p)
+static bool GetAccessionSearchServiceParameterTypesForNamedParameters (const Service *service_p, const char *param_name_s, ParameterType *pt_p)
 {
 	const NamedParameterType params [] =
 		{
@@ -207,25 +207,25 @@ static bool GetGeneTreesSearchServiceParameterTypesForNamedParameters (const Ser
 
 
 
-static void ReleaseGeneTreesSearchServiceParameters (Service * UNUSED_PARAM (service_p), ParameterSet *params_p)
+static void ReleaseAccessionSearchServiceParameters (Service * UNUSED_PARAM (service_p), ParameterSet *params_p)
 {
 	FreeParameterSet (params_p);
 }
 
 
-static bool CloseGeneTreesSearchService (Service *service_p)
+static bool CloseAccessionSearchService (Service *service_p)
 {
 	bool success_flag = true;
 
-	FreeGeneTreesServiceData ((GeneTreesServiceData *) (service_p -> se_data_p));;
+	FreeAccessionServiceData ((AccessionServiceData *) (service_p -> se_data_p));;
 
 	return success_flag;
 }
 
 
-static ServiceJobSet *RunGeneTreesSearchService (Service *service_p, ParameterSet *param_set_p, User * UNUSED_PARAM (user_p), ProvidersStateTable * UNUSED_PARAM (providers_p))
+static ServiceJobSet *RunAccessionSearchService (Service *service_p, ParameterSet *param_set_p, User * UNUSED_PARAM (user_p), ProvidersStateTable * UNUSED_PARAM (providers_p))
 {
-	GeneTreesServiceData *data_p = (GeneTreesServiceData *) (service_p -> se_data_p);
+	AccessionServiceData *data_p = (AccessionServiceData *) (service_p -> se_data_p);
 
 	service_p -> se_jobs_p = AllocateSimpleServiceJobSet (service_p, NULL, "Gene Trees");
 
@@ -239,44 +239,6 @@ static ServiceJobSet *RunGeneTreesSearchService (Service *service_p, ParameterSe
 
 			if (param_set_p)
 				{
-					const char *gene_s = NULL;
-					const uint32 *cluster_p = NULL;
-					const bool *indexes_p = NULL;
-
-					if (GetCurrentBooleanParameterValueFromParameterSet (param_set_p, S_GENERATE_INDEXES.npt_name_s, &indexes_p))
-						{
-							if (indexes_p && (*indexes_p))
-								{
-									if (!AddCollectionSingleIndex (data_p -> gtsd_mongo_p, data_p -> gtsd_database_s, data_p -> gtsd_collection_s, GTS_GENE_ID_S, NULL, true, false))
-										{
-											AddParameterErrorMessageToServiceJob (job_p, S_GENERATE_INDEXES.npt_name_s, S_GENERATE_INDEXES.npt_type, "Failed to add index for genes");
-											PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to add index for db \"%s\" collection \"%s\" field \"%s\"", data_p -> gtsd_database_s, data_p -> gtsd_collection_s, GTS_GENE_ID_S);
-										}
-
-									if (!AddCollectionSingleIndex (data_p -> gtsd_mongo_p, data_p -> gtsd_database_s, data_p -> gtsd_collection_s, GTS_CLUSTER_ID_S, NULL, false, false))
-										{
-											AddParameterErrorMessageToServiceJob (job_p, S_GENERATE_INDEXES.npt_name_s, S_GENERATE_INDEXES.npt_type, "Failed to add index for clusters");
-											PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to add index for db \"%s\" collection \"%s\" field \"%s\"", data_p -> gtsd_database_s, data_p -> gtsd_collection_s, GTS_GENE_ID_S);
-										}
-								}
-						}
-
-
-					if (GetCurrentStringParameterValueFromParameterSet (param_set_p, S_GENE_ID.npt_name_s, &gene_s))
-						{
-							if (IsStringEmpty (gene_s))
-								{
-									gene_s = NULL;
-								}
-						}		/* if (GetParameterValueFromParameterSet (param_set_p, S_MARKER.npt_name_s, &marker_value, true)) */
-
-					GetCurrentUnsignedIntParameterValueFromParameterSet (param_set_p, S_CLUSTER_ID.npt_name_s, &cluster_p);
-
-					if (gene_s || cluster_p)
-						{
-							DoSearch (job_p, gene_s, cluster_p, data_p);
-						}
-
 
 				}		/* if (param_set_p) */
 
@@ -288,7 +250,7 @@ static ServiceJobSet *RunGeneTreesSearchService (Service *service_p, ParameterSe
 }
 
 
-static ServiceMetadata *GetGeneTreesSearchServiceMetadata (Service * UNUSED_PARAM (service_p))
+static ServiceMetadata *GetAccessionSearchServiceMetadata (Service * UNUSED_PARAM (service_p))
 {
 	const char *term_url_s = CONTEXT_PREFIX_EDAM_ONTOLOGY_S "topic_0625";
 	SchemaTerm *category_p = AllocateSchemaTerm (term_url_s, "Genotype and phenotype",
@@ -381,7 +343,7 @@ static ServiceMetadata *GetGeneTreesSearchServiceMetadata (Service * UNUSED_PARA
 }
 
 
-static ParameterSet *IsResourceForGeneTreesSearchService (Service * UNUSED_PARAM (service_p), DataResource * UNUSED_PARAM (resource_p), Handler * UNUSED_PARAM (handler_p))
+static ParameterSet *IsResourceForAccessionSearchService (Service * UNUSED_PARAM (service_p), DataResource * UNUSED_PARAM (resource_p), Handler * UNUSED_PARAM (handler_p))
 {
 	return NULL;
 }
@@ -389,7 +351,7 @@ static ParameterSet *IsResourceForGeneTreesSearchService (Service * UNUSED_PARAM
 
 
 
-static void DoSearch (ServiceJob *job_p, const char * const gene_s, const uint32 * const cluster_p, GeneTreesServiceData *data_p)
+static void DoSearch (ServiceJob *job_p, const char * const gene_s, const uint32 * const cluster_p, AccessionServiceData *data_p)
 {
 	OperationStatus status = OS_FAILED_TO_START;
 	bson_t *query_p = bson_new ();
@@ -418,7 +380,7 @@ static void DoSearch (ServiceJob *job_p, const char * const gene_s, const uint32
 
 			if (success_flag)
 				{
-					json_t *results_p = GetAllMongoResultsAsJSON (data_p -> gtsd_mongo_p, query_p, NULL);
+					json_t *results_p = GetAllMongoResultsAsJSON (data_p -> asd_mongo_p, query_p, NULL);
 
 					if (results_p)
 						{
