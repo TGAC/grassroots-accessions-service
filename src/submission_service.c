@@ -251,6 +251,16 @@ static ServiceJobSet *RunAccessionSubmissionService (Service *service_p, Paramet
 
 					if (GetCurrentJSONParameterValueFromParameterSet (param_set_p, S_SET_DATA.npt_name_s, &data_json_p))
 						{
+							/*
+							 * Has a spreadsheet been uploaded?
+							 */
+							if (data_json_p && (json_array_size (data_json_p) > 0))
+								{
+									if (!AddAccessionDataFromJSON (job_p, data_json_p, data_p))
+										{
+											PrintJSONToErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, data_json_p, "AddAccessionDataFromJSON () failed");
+										}
+								}		/* if (data_json_p) */
 
 
 						}		/* if (GetParameterValueFromParameterSet (param_set_p, S_SET_DATA.npt_name_s, &data_value, true)) */
@@ -359,5 +369,72 @@ static ServiceMetadata *GetAccessionSubmissionServiceMetadata (Service *service_
 static ParameterSet *IsResourceForAccessionSubmissionService (Service * UNUSED_PARAM (service_p), DataResource * UNUSED_PARAM (resource_p), Handler * UNUSED_PARAM (handler_p))
 {
 	return NULL;
+}
+
+
+
+
+static bool AddAccessionDataFromJSON (ServiceJob *job_p, const json_t *accessions_json_p, const FieldTrialServiceData *data_p)
+{
+	bool success_flag	= true;
+	OperationStatus status = OS_FAILED;
+
+	if (json_is_array (accessions_json_p))
+		{
+			const size_t num_rows = json_array_size (accessions_json_p);
+			size_t i;
+			size_t num_imported = 0;
+			size_t num_empty_rows = 0;
+			size_t num_existing = 0;
+
+			for (i = 0; i < num_rows; ++ i)
+				{
+					json_t *table_row_json_p = json_array_get (accessions_json_p, i);
+					const size_t row_size =  json_object_size (table_row_json_p);
+
+					if (row_size > 0)
+						{
+							const char * const ACCESSION_ID_KEY_S = "ID";
+							const char * const ACCESSION_GROUP_KEY_S = "Group";
+							const char * const ACCESSION_SUBCOLLECTION_KEY_S = "SubCollection";
+							const char * const ATK_STORE_CODE_KEY_S = "ATK_StoreCode";
+							const char * const ATK_ACCESSION_KEY_S = "ATK_AccessionName";
+							const char * const ATK_SYNONYM_1_KEY_S = "ATK_Synonym1";
+							const char * const ATK_SYNONYM_2_KEY_S = "ATK_Synonym2";
+							const char * const BTK_STORE_CODE_KEY_S = "BTK_StoreCode";
+							const char * const BTK_ACCESSION_KEY_S = "BTK_AccessionName";
+							const char * const PEDIGREE_NAM_STORE_CODE_KEY_S = "NAM.Parent.StoreCode";
+							const char * const PEDIGREE_NAM_PARENT_SYNONYM_1_KEY_S = "NAM.Parent.Synonym1";
+							const char * const PEDIGREE_NAM_PARENT_SYNONYM_2_KEY_S = "NAM.Parent.Synonym2";
+							const char * const PEDIGREE_NAM_PARENT_SYNONYM_3_KEY_S = "NAM.Parent.Synonym3";
+							const char * const PEDIGREE_WATKINS_STORE_CODE_KEY_S = "Watkins.Parent.StoreCode";
+							const char * const PEDIGREE_WATKINS_PARENT_SYNONYM_1_S = "Watkins.Parent.Synonym1";
+							const char * const PEDIGREE_WATKINS_COUNTRY_S = "Watkins.Country.of.Origin.";
+							const char * const PEDIGREE_WATKINS_PARENT_GROWTH_S = "Watkins.Parent.Growth.Habit";
+							const char * const PEDIGREE_WATKINS_ANCESTRAL_S = "Watkins.Ancestral.Group";
+
+
+						}		/* if (row_size > 0) */
+					else
+						{
+							++ num_empty_rows;
+						}
+				}		/* for (i = 0; i < num_rows; ++ i) */
+
+
+			if (num_imported + num_empty_rows  + num_existing == num_rows)
+				{
+					status = OS_SUCCEEDED;
+				}
+			else if (num_imported > 0)
+				{
+					status = OS_PARTIALLY_SUCCEEDED;
+				}
+
+		}		/* if (json_is_array (plots_json_p)) */
+
+	SetServiceJobStatus (job_p, status);
+
+	return success_flag;
 }
 
