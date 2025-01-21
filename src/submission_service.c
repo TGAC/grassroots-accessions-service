@@ -66,24 +66,9 @@ static ServiceMetadata *GetAccessionSubmissionServiceMetadata (Service *service_
 static bool GetAccessionSubmissionServiceParameterTypesForNamedParameters (const Service *service_p, const char *param_name_s, ParameterType *pt_p);
 
 
-static bool AddChromosomes (json_t *doc_p, json_t *chromosomes_p);
-
-static bool AddGeneticMappingPositions (json_t *doc_p, json_t *mappings_p);
-
 static const char *AddParentRow (json_t *doc_p, json_t *genotypes_p, const char *key_s);
 
-
-static bool AddGenotypesRow (json_t *doc_p, json_t *genotypes_p, AccessionServiceData *data_p);
-
-static bson_oid_t *SaveMarkers (const char **parent_a_ss, const char **parent_b_ss, const json_t *data_json_p, AccessionServiceData *data_p);
-
-static bool SaveVarieties (const char *parent_a_s, const char *parent_b_s, const bson_oid_t *id_p, AccessionServiceData *data_p);
-
-static bool SaveVariety (const char *parent_s, const bson_oid_t *id_p, MongoTool *mongo_p);
-
-static char *GetAccession (const json_t *genotypes_p, AccessionServiceData *data_p);
-
-
+s
 /*
  * API definitions
  */
