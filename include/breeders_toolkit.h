@@ -29,9 +29,10 @@ extern "C"
 #endif
 
 
+ACCESSION_SERVICE_LOCAL int CreateBreedersToolkitRecordFromTabularJSON (const json_t * const json_p, BreedersToolkitRecord **btk_pp);
 
 
-ACCESSION_SERVICE_LOCAL BreedersToolkitRecord *AllocateBreedersToolkitRecord (const char * const store_code_s, const char * const accession_s);s
+ACCESSION_SERVICE_LOCAL BreedersToolkitRecord *AllocateBreedersToolkitRecord (const char * const store_code_s, const char * const accession_s);
 
 
 ACCESSION_SERVICE_LOCAL void FreeBreedersToolkitRecord (BreedersToolkitRecord *parent_p);
@@ -40,7 +41,7 @@ ACCESSION_SERVICE_LOCAL void FreeBreedersToolkitRecord (BreedersToolkitRecord *p
 ACCESSION_SERVICE_LOCAL json_t *GetBreedersToolkitRecordAsJSON (const BreedersToolkitRecord * const btk_p);
 
 
-ACCESSION_SERVICE_LOCAL BreedersToolkitRecord *GetBreedersToolkitRecordAsJSON (const json_t * const parent_data_p);
+ACCESSION_SERVICE_LOCAL BreedersToolkitRecord *GetBreedersToolkitRecordFromJSON (const json_t * const json_p);
 
 
 #ifdef __cplusplus

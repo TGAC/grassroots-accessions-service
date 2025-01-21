@@ -68,7 +68,10 @@ static bool GetAccessionSubmissionServiceParameterTypesForNamedParameters (const
 
 static const char *AddParentRow (json_t *doc_p, json_t *genotypes_p, const char *key_s);
 
-s
+static bool AddAccessionDataFromJSON (ServiceJob *job_p, const json_t *accessions_json_p, const AccessionServiceData *data_p);
+
+
+
 /*
  * API definitions
  */
@@ -359,7 +362,7 @@ static ParameterSet *IsResourceForAccessionSubmissionService (Service * UNUSED_P
 
 
 
-static bool AddAccessionDataFromJSON (ServiceJob *job_p, const json_t *accessions_json_p, const FieldTrialServiceData *data_p)
+static bool AddAccessionDataFromJSON (ServiceJob *job_p, const json_t *accessions_json_p, const AccessionServiceData *data_p)
 {
 	bool success_flag	= true;
 	OperationStatus status = OS_FAILED;
@@ -386,8 +389,6 @@ static bool AddAccessionDataFromJSON (ServiceJob *job_p, const json_t *accession
 							const char * const ATK_ACCESSION_KEY_S = "ATK_AccessionName";
 							const char * const ATK_SYNONYM_1_KEY_S = "ATK_Synonym1";
 							const char * const ATK_SYNONYM_2_KEY_S = "ATK_Synonym2";
-							const char * const BTK_STORE_CODE_KEY_S = "BTK_StoreCode";
-							const char * const BTK_ACCESSION_KEY_S = "BTK_AccessionName";
 							const char * const PEDIGREE_NAM_STORE_CODE_KEY_S = "NAM.Parent.StoreCode";
 							const char * const PEDIGREE_NAM_PARENT_SYNONYM_1_KEY_S = "NAM.Parent.Synonym1";
 							const char * const PEDIGREE_NAM_PARENT_SYNONYM_2_KEY_S = "NAM.Parent.Synonym2";
@@ -397,6 +398,8 @@ static bool AddAccessionDataFromJSON (ServiceJob *job_p, const json_t *accession
 							const char * const PEDIGREE_WATKINS_COUNTRY_S = "Watkins.Country.of.Origin.";
 							const char * const PEDIGREE_WATKINS_PARENT_GROWTH_S = "Watkins.Parent.Growth.Habit";
 							const char * const PEDIGREE_WATKINS_ANCESTRAL_S = "Watkins.Ancestral.Group";
+
+							OperationStatus status = Get
 
 
 						}		/* if (row_size > 0) */
