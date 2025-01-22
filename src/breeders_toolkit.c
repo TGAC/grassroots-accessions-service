@@ -10,11 +10,53 @@
 
 #include "memory_allocations.h"
 #include "string_utils.h"
+#include "streams.h"
+#include "schema_keys.h"
+
+
+static const char * const S_ACCESSION_S = CONTEXT_PREFIX_SCHEMA_ORG_S "name";
+static const char * const S_STORE_CODE_S = CONTEXT_PREFIX_SCHEMA_ORG_S "identifier";
 
 
 BreedersToolkitRecord *AllocateBreedersToolkitRecord (const char * const store_code_s, const char * const accession_s)
 {
+	char *copied_store_code_s = EasyCopyToNewString (store_code_s);
 
+	if (copied_store_code_s)
+		{
+			char *copied_accession_s = EasyCopyToNewString (accession_s);
+
+			if (copied_accession_s)
+				{
+					BreedersToolkitRecord *btk_p = (BreedersToolkitRecord *) AllocMemory (sizeof (BreedersToolkitRecord));
+
+					if (btk_p)
+						{
+							btk_p -> btr_accession_s = copied_accession_s;
+							btk_p -> btr_store_code_s = copied_store_code_s;
+
+							return btk_p;
+						}		/* if (btk_p) */
+					else
+						{
+							PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to allocate memory for BreedersToolkitRecord (\"%s\", \"%s\"", store_code_s, accession_s);
+						}
+
+					FreeCopiedString (copied_accession_s);
+				}		/* if (copied_accession_s) */
+			else
+				{
+					PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to copy accession \"s\"", accession_s);
+				}
+
+			FreeCopiedString (copied_store_code_s);
+		}		/* if (copied_store_code_s) */
+	else
+		{
+			PrintErrors (STM_LEVEL_SEVERE, __FILE__, __LINE__, "Failed to copy store code \"s\"", store_code_s);
+		}
+
+	return NULL;
 }
 
 
@@ -68,7 +110,13 @@ int CreateBreedersToolkitRecordFromTabularJSON (const json_t * const json_p, Bre
 
 
 
-json_t *GetBreedersToolkitRecordAsJSON (const BreedersToolkitRecord * const btk_p);
+json_t *GetBreedersToolkitRecordAsJSON (const BreedersToolkitRecord * const btk_p)
+{
+	return NULL;
+}
 
 
-BreedersToolkitRecord *GetBreedersToolkitRecordAsJSON (const json_t * const btk_jsons_p);
+BreedersToolkitRecord *GetBreedersToolkitRecordAsJSON (const json_t * const btk_json_p)
+{
+	return NULL;
+}
