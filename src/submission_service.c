@@ -32,6 +32,8 @@
 #include "string_utils.h"
 #include "schema_keys.h"
 
+#include "breeders_toolkit.h"
+
 #include "json_parameter.h"
 
 /*
@@ -390,7 +392,7 @@ static bool AddAccessionDataFromJSON (ServiceJob *job_p, const json_t *accession
 							const char * const PEDIGREE_NAM_PARENT_SYNONYM_2_KEY_S = "NAM.Parent.Synonym2";
 							const char * const PEDIGREE_NAM_PARENT_SYNONYM_3_KEY_S = "NAM.Parent.Synonym3";
 							const char * const PEDIGREE_WATKINS_STORE_CODE_KEY_S = "Watkins.Parent.StoreCode";
-							const char * const PvEDIGREE_WATKINS_PARENT_SYNONYM_1_S = "Watkins.Parent.Synonym1";
+							const char * const PEDIGREE_WATKINS_PARENT_SYNONYM_1_S = "Watkins.Parent.Synonym1";
 							const char * const PEDIGREE_WATKINS_COUNTRY_S = "Watkins.Country.of.Origin.";
 							const char * const PEDIGREE_WATKINS_PARENT_GROWTH_S = "Watkins.Parent.Growth.Habit";
 							const char * const PEDIGREE_WATKINS_ANCESTRAL_S = "Watkins.Ancestral.Group";
@@ -401,6 +403,12 @@ static bool AddAccessionDataFromJSON (ServiceJob *job_p, const json_t *accession
 
 							if (res >= 0)
 								{
+									res = CreateAcademicToolkitRecordFromTabularJSON (table_row_json_p, &btk_p);
+
+									if (res >= 0)
+										{
+
+										}		/* if (res >= 0) */
 
 								}		/* if (res >= 0) */
 

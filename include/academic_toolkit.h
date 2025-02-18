@@ -40,7 +40,7 @@ extern "C"
 ACCESSION_SERVICE_LOCAL int CreateAcademicToolkitRecordFromTabularJSON (const json_t * const json_p, AcademicToolkitRecord **btk_pp);
 
 
-ACCESSION_SERVICE_LOCAL AcademicToolkitRecord *AllocateAcademicToolkitRecord (const char * const store_code_s, const char * const accession_s);
+ACCESSION_SERVICE_LOCAL AcademicToolkitRecord *AllocateAcademicToolkitRecord (const char * const store_code_s, const char * const accession_s, const char * const syn_1_s, const char * const syn_2_s);
 
 
 ACCESSION_SERVICE_LOCAL void FreeAcademicToolkitRecord (AcademicToolkitRecord *parent_p);

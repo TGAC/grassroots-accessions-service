@@ -40,6 +40,8 @@ INCLUDES = \
 	-I$(DIR_BSON_INC) 
 	
 SRCS 	= \
+	academic_toolkit.c \
+	breeders_toolkit.c \
 	submission_service.c \
 	accession_service_data.c \
 	search_service.c 

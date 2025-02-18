@@ -12,6 +12,8 @@
 #include "string_utils.h"
 #include "streams.h"
 #include "schema_keys.h"
+#include "json_util.h"
+
 
 
 static const char * const S_ACCESSION_S = CONTEXT_PREFIX_SCHEMA_ORG_S "name";
@@ -116,7 +118,7 @@ json_t *GetBreedersToolkitRecordAsJSON (const BreedersToolkitRecord * const btk_
 }
 
 
-BreedersToolkitRecord *GetBreedersToolkitRecordAsJSON (const json_t * const btk_json_p)
+BreedersToolkitRecord *GetBreedersToolkitRecordFromJSON (const json_t * const btk_json_p)
 {
 	return NULL;
 }

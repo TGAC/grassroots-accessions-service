@@ -11,6 +11,9 @@
 
 #include "accession_service_library.h"
 
+#include "jansson.h"
+
+
 
 typedef struct BreedersToolkitRecord
 {
