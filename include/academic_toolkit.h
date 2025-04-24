@@ -37,7 +37,7 @@ extern "C"
 #endif
 
 
-ACCESSION_SERVICE_LOCAL int CreateAcademicToolkitRecordFromTabularJSON (const json_t * const json_p, AcademicToolkitRecord **btk_pp);
+ACCESSION_SERVICE_LOCAL int CreateAcademicToolkitRecordFromTabularJSON (const json_t * const json_p, AcademicToolkitRecord **atk_pp);
 
 
 ACCESSION_SERVICE_LOCAL AcademicToolkitRecord *AllocateAcademicToolkitRecord (const char * const store_code_s, const char * const accession_s, const char * const syn_1_s, const char * const syn_2_s);
@@ -50,6 +50,7 @@ ACCESSION_SERVICE_LOCAL json_t *GetAcademicToolkitRecordAsJSON (const AcademicTo
 
 
 ACCESSION_SERVICE_LOCAL AcademicToolkitRecord *GetAcademicToolkitRecordFromJSON (const json_t * const json_p);
+
 
 
 #ifdef __cplusplus

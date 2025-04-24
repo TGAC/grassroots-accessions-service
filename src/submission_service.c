@@ -32,6 +32,7 @@
 #include "string_utils.h"
 #include "schema_keys.h"
 
+#include "academic_toolkit.h"
 #include "breeders_toolkit.h"
 
 #include "json_parameter.h"
